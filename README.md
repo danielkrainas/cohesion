@@ -49,25 +49,21 @@ log:
   fields:
     customfield1: 'value'
 
-# http server stuff
-http:
-  # host:port address for the server to listen on
-  addr: ':9410'
-  # http host
-  host: 'localhost'
+# node monitoring settings
+monitor:
+  frequency: 10s
 
-  # CORS stuff
-  cors:
-    # origins to allow
-    origins: ['http://localhost:5555']
-    # methods to allow
-    methods: ['GET','POST','OPTIONS','DELETE','CONNECT']
-    # headers to allow
-    headers: ['*']
+# node connection driver and parameters
+node:
+  serf:
+    addr: 0.0.0.0
 
-
+# discovery strategy and parameters
+discovery: 'echo'
 
 ```
+
+`node` and `discovery` only allow specification of *one* driver per configuration. Any additional ones will cause a validation error when the application starts.
 
 ## Bugs and Feedback
 
