@@ -38,6 +38,14 @@ type driver struct {
 
 func (d *driver) IsConnected(ctx context.Context) (bool, error) {
 	m, err := d.client.Members()
+	if err == nil {
+		for _, n := range m {
+			if n.Status != "alive" {
+				return false, nil
+			}
+		}
+	}
+
 	return len(m) > 1, err
 }
 
