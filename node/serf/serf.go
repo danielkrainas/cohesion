@@ -42,5 +42,5 @@ func (d *driver) IsConnected(ctx context.Context) (bool, error) {
 }
 
 func (d *driver) Join(ctx context.Context, addrs []string) (int, error) {
-	return d.client.Join(addrs, true)
+	return d.client.Join(addrs, false)
 }
