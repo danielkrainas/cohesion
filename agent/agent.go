@@ -42,16 +42,19 @@ func (agent *Agent) MonitorAndRecover() {
 
 	for {
 		context.GetLogger(agent).Info("checking node status")
-		if !agent.node.IsConnected(agent) {
+		if ok, err := agent.node.IsConnected(agent); !ok {
 			context.GetLogger(agent).Info("node disconnected, starting discovery")
+
 			addrs, err := agent.discovery.Locate(agent)
 			if err != nil {
 				context.GetLogger(agent).Errorf("error executing discovery: %v", err)
-			} else if err = agent.node.Join(agent, addrs); err != nil {
+			} else if _, err = agent.node.Join(agent, addrs); err != nil {
 				context.GetLogger(agent).Errorf("error joining discovery candidates: %v", err)
 			} else {
 				context.GetLogger(agent).Info("node joined: ", strings.Join(addrs, ", "))
 			}
+		} else if err != nil {
+			context.GetLogger(agent).Errorf("error checking node status: %v", err)
 		} else {
 			context.GetLogger(agent).Info("node ok")
 		}
@@ -70,6 +73,16 @@ func New(ctx context.Context, config *configuration.Config) (*Agent, error) {
 	log := context.GetLogger(ctx)
 	log.Info("initializing agent")
 
+	d, err := configureDiscovery(config)
+	if err != nil {
+		return nil, err
+	}
+
+	n, err := configureNodeAgent(config)
+	if err != nil {
+		return nil, err
+	}
+
 	log.Infof("using %q logging formatter", config.Log.Formatter)
 	log.Infof("using %q node agent", config.Node.Type())
 	log.Infof("using %q discovery strategy", config.Discovery.Type())
@@ -80,6 +93,24 @@ func New(ctx context.Context, config *configuration.Config) (*Agent, error) {
 		discovery: d,
 		node:      n,
 	}, nil
+}
+
+func configureNodeAgent(config *configuration.Config) (node.Agent, error) {
+	params := config.Node.Parameters()
+	if params == nil {
+		params = make(configuration.Parameters)
+	}
+
+	return nodeFactory.Create(config.Node.Type(), params)
+}
+
+func configureDiscovery(config *configuration.Config) (discovery.Strategy, error) {
+	params := config.Discovery.Parameters()
+	if params == nil {
+		params = make(configuration.Parameters)
+	}
+
+	return strategyFactory.Create(config.Discovery.Type(), params)
 }
 
 func configureLogging(ctx context.Context, config *configuration.Config) (context.Context, error) {
