@@ -3,3 +3,12 @@ version: 0.1
 log:
   level: 'debug'
   formatter: 'text'
+
+monitor:
+  frequency: 10s
+
+node:
+  serf:
+    addr: 0.0.0.0:7373
+
+discovery: echo

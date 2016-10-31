@@ -4,3 +4,12 @@ log:
   level: 'info'
   formatter: 'text'
 
+monitor:
+  frequency: 10s
+
+node:
+  serf:
+    addr: 0.0.0.0
+
+discovery: 'echo'
+
