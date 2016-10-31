@@ -48,10 +48,10 @@ func (agent *Agent) MonitorAndRecover() {
 			addrs, err := agent.discovery.Locate(agent)
 			if err != nil {
 				context.GetLogger(agent).Errorf("error executing discovery: %v", err)
-			} else if _, err = agent.node.Join(agent, addrs); err != nil {
+			} else if i, err = agent.node.Join(agent, addrs); err != nil {
 				context.GetLogger(agent).Errorf("error joining discovery candidates: %v", err)
 			} else {
-				context.GetLogger(agent).Info("node joined: ", strings.Join(addrs, ", "))
+				context.GetLogger(agent).Info("node joined: %d node(s)", i)
 			}
 		} else if err != nil {
 			context.GetLogger(agent).Errorf("error checking node status: %v", err)
