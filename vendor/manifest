@@ -90,6 +90,68 @@
 			"branch": "master",
 			"path": "vendor/github.com/miekg/dns",
 			"notests": true
+		},
+		{
+			"importpath": "github.com/tatsushid/go-fastping",
+			"repository": "https://github.com/tatsushid/go-fastping",
+			"vcs": "git",
+			"revision": "d7bb493dee3e090e2ffb6914adddf17c1e7c026c",
+			"branch": "master",
+			"notests": true
+		},
+		{
+			"importpath": "golang.org/x/net/bpf",
+			"repository": "https://go.googlesource.com/net",
+			"vcs": "git",
+			"revision": "73058b0420c0c24a7f9ec3eb6f624ac85d2ed035",
+			"branch": "master",
+			"path": "bpf",
+			"notests": true
+		},
+		{
+			"importpath": "golang.org/x/net/icmp",
+			"repository": "https://go.googlesource.com/net",
+			"vcs": "git",
+			"revision": "73058b0420c0c24a7f9ec3eb6f624ac85d2ed035",
+			"branch": "master",
+			"path": "icmp",
+			"notests": true
+		},
+		{
+			"importpath": "golang.org/x/net/internal/iana",
+			"repository": "https://go.googlesource.com/net",
+			"vcs": "git",
+			"revision": "73058b0420c0c24a7f9ec3eb6f624ac85d2ed035",
+			"branch": "master",
+			"path": "internal/iana",
+			"notests": true
+		},
+		{
+			"importpath": "golang.org/x/net/internal/netreflect",
+			"repository": "https://go.googlesource.com/net",
+			"vcs": "git",
+			"revision": "73058b0420c0c24a7f9ec3eb6f624ac85d2ed035",
+			"branch": "master",
+			"path": "internal/netreflect",
+			"notests": true
+		},
+		{
+			"importpath": "golang.org/x/net/ipv4",
+			"repository": "https://go.googlesource.com/net",
+			"vcs": "git",
+			"revision": "73058b0420c0c24a7f9ec3eb6f624ac85d2ed035",
+			"branch": "master",
+			"path": "ipv4",
+			"notests": true
+		},
+		{
+			"importpath": "golang.org/x/net/ipv6",
+			"repository": "https://go.googlesource.com/net",
+			"vcs": "git",
+			"revision": "73058b0420c0c24a7f9ec3eb6f624ac85d2ed035",
+			"branch": "master",
+			"path": "/ipv6",
+			"notests": true
 		}
 	]
 }
