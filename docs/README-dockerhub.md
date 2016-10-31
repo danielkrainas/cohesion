@@ -1,6 +1,6 @@
 # Cohesion
 
-Cohesion adds a lightweight, rudimentry service registry abstraction to [Serf](https://github.com/hashicorp/serf) agents and enables autonomically bootstrapping new nodes without prior knowledge of the cluster or in the event of a cluster failure. The service registry is managed through an HTTP API and saves registration information within labels in Serf. 
+Cohesion is a tool for automatically clustering nodes to one another. It will monitor the cluster agent on the node for when or if the node becomes disconnected or if it was never connected to start, Cohesion will use a preconfigured strategy for locating and joining the cluster or another stray node. The only supported node agent right now is [Hashicorp's Serf](https://github.com/hashicorp/serf).
 
 For more information, see the [project site.](https://github.com/danielkrainas/cohesion)
 
