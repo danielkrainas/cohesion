@@ -92,6 +92,14 @@
 			"notests": true
 		},
 		{
+			"importpath": "github.com/satori/go.uuid",
+			"repository": "https://github.com/satori/go.uuid",
+			"vcs": "git",
+			"revision": "b061729afc07e77a8aa4fad0a2fd840958f1942a",
+			"branch": "master",
+			"notests": true
+		},
+		{
 			"importpath": "github.com/tatsushid/go-fastping",
 			"repository": "https://github.com/tatsushid/go-fastping",
 			"vcs": "git",
