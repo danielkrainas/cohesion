@@ -1,6 +1,7 @@
 package echo
 
 import (
+	"errors"
 	"fmt"
 	"net"
 	"sync"
@@ -16,24 +17,38 @@ import (
 type driverFactory struct{}
 
 func (f *driverFactory) Create(parameters map[string]interface{}) (discovery.Strategy, error) {
-	return &driver{}, nil
+	cidr, ok := parameters["network"].(string)
+	if !ok {
+		return nil, errors.New("invalid configuration value for `network`")
+	}
+
+	return &driver{
+		cidr: cidr,
+	}, nil
 }
 
 func init() {
 	factory.Register("echo", &driverFactory{})
 }
 
-type driver struct{}
+type driver struct {
+	cidr string
+}
 
 func (d *driver) Locate(ctx context.Context) ([]string, error) {
-	hosts := getHosts()
+	var hosts []string
+	if d.cidr != "" {
+		hosts = getHostsFromCIDR(d.cidr)
+	} else {
+		hosts = getHosts()
+	}
+
 	if len(hosts) < 1 {
 		context.GetLogger(ctx).Warn("no hosts to ping, skipping")
 		return nil, nil
 	}
 
 	m := sync.Mutex{}
-	ch := make(chan struct{})
 	p := fastping.NewPinger()
 	for _, h := range hosts {
 		ra, err := net.ResolveIPAddr("ip4:icmp", h)
@@ -52,16 +67,65 @@ func (d *driver) Locate(ctx context.Context) ([]string, error) {
 		results = append(results, addr.String())
 	}
 
-	p.OnIdle = func() {
-		ch <- struct{}{}
-	}
+	p.OnIdle = func() {}
 
 	if err := p.Run(); err != nil {
 		return nil, err
 	}
 
-	<-ch
 	return results, nil
+}
+
+func getHostsFromCIDR(cidr string) []string {
+	results := make([]string, 0)
+	lookup := getLocalAddressLookup()
+	ip, ipnet, err := net.ParseCIDR(cidr)
+	if err != nil {
+		return nil
+	}
+
+	for ip := ip.Mask(ipnet.Mask); ipnet.Contains(ip); inc(ip) {
+		if _, found := lookup[ip.String()]; found {
+			continue
+		}
+
+		results = append(results, fmt.Sprint(ip))
+	}
+
+	return results
+}
+
+func getLocalAddressLookup() map[string]bool {
+	results := make(map[string]bool)
+	ifaces, err := net.Interfaces()
+	if err != nil {
+		return results
+	}
+
+	for _, i := range ifaces {
+		addrs, err := i.Addrs()
+		if err != nil {
+			return results
+		}
+
+		for _, a := range addrs {
+			var ip net.IP
+			switch v := a.(type) {
+			case *net.IPAddr:
+				ip = v.IP
+			case *net.IPNet:
+				ip = v.IP
+			}
+
+			if ip == nil || ip.DefaultMask() == nil {
+				continue
+			}
+
+			results[ip.String()] = true
+		}
+	}
+
+	return results
 }
 
 func getHosts() []string {
